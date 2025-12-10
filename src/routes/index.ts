@@ -37,4 +37,17 @@ router.post("/contato", async (req, res) => {
   return res.status(201).json({ contato: name });
 });
 
+router.get("/contatos", async (req, res) => {
+  let list: string[] = [];
+
+  try {
+    const data = await readFile(dataSource, "utf-8");
+    list = JSON.parse(data);
+  } catch (err) {
+    console.log(err);
+  }
+
+  return res.status(200).json({ contatos: list });
+});
+
 export default router;
