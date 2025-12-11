@@ -1,8 +1,10 @@
 import express from "express";
-import { readFile, writeFile } from "fs/promises";
+import {
+  createContact,
+  deleteContact,
+  getContacts,
+} from "../services/contact.js";
 const router = express.Router();
-
-const dataSource = "data/list.json";
 
 router.post("/contato", async (req, res) => {
   const { name } = req.body;
@@ -15,62 +17,25 @@ router.post("/contato", async (req, res) => {
       .json({ error: "Name must be at least 2 characters long" });
   }
 
-  // TODO: Save contact in database
-  let list: string[] = [];
-
-  try {
-    const data = await readFile(dataSource, "utf-8");
-    list = JSON.parse(data);
-  } catch (err) {
-    console.log(err);
-  }
-
-  list.push(name);
-
-  try {
-    await writeFile(dataSource, JSON.stringify(list));
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Failed to save contact" });
-  }
+  await createContact(name);
 
   return res.status(201).json({ contato: name });
 });
 
 router.get("/contatos", async (req, res) => {
-  let list: string[] = [];
-
-  try {
-    const data = await readFile(dataSource, "utf-8");
-    list = JSON.parse(data);
-  } catch (err) {
-    console.log(err);
-  }
+  let list = await getContacts();
 
   return res.status(200).json({ contatos: list });
 });
 
-router.delete("/contato/:name", async (req, res) => {
-  const { name } = req.params;
+router.delete("/contato", async (req, res) => {
+  const { name } = req.query;
 
-  // TODO: Delete contact from database
-  let list: string[] = [];
-
-  try {
-    const data = await readFile(dataSource, "utf-8");
-    list = JSON.parse(data);
-  } catch (err) {
-    console.log(err);
+  if (!name) {
+    return res.status(400).json({ error: "Name is required" });
   }
 
-  list = list.filter((contact) => contact !== name);
-
-  try {
-    await writeFile(dataSource, JSON.stringify(list));
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Failed to delete contact" });
-  }
+  await deleteContact(name as string);
 
   return res.status(200).json({ contato: name });
 });

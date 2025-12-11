@@ -13,6 +13,7 @@ Este é um projeto simples de API para gerenciamento de uma lista de contatos, d
 
 - **Adicionar contato**: Rota para inserir um novo nome na lista.
 - **Listar contatos**: Rota para visualizar todos os nomes cadastrados.
+- **Remover contato**: Rota para apagar um contato da lista.
 - **Persistência de dados**: Os dados são salvos localmente em um arquivo JSON (`data/list.json`).
 
 ## 🛠️ Instalação e Uso
@@ -24,7 +25,7 @@ Este é um projeto simples de API para gerenciamento de uma lista de contatos, d
 npm install
 ```
 
-3. Para iniciar o servidor em modo de desenvolvimento (com *watch* para alterações):
+3. Para iniciar o servidor em modo de desenvolvimento (com _watch_ para alterações):
 
 ```bash
 npm run dev
@@ -39,6 +40,7 @@ O servidor estará rodando em `http://localhost:3333`.
 Adiciona um novo contato à lista.
 
 **Corpo da requisição (JSON):**
+
 ```json
 {
   "name": "Nome do Contato"
@@ -50,11 +52,28 @@ Adiciona um novo contato à lista.
 Retorna a lista completa de contatos cadastrados.
 
 **Resposta de exemplo:**
+
 ```json
 {
-  "contatos": [
-    "João Silva",
-    "Maria Souza"
-  ]
+  "contatos": ["João Silva", "Maria Souza"]
+}
+```
+
+### `DELETE /contato`
+
+Remove um contato da lista.
+
+**Query Params:**
+
+- `name`: Nome do contato a ser removido (insensível a maiúsculas/minúsculas).
+
+**Exemplo de requisição:**
+`DELETE /contato?name=João Silva`
+
+**Resposta de exemplo:**
+
+```json
+{
+  "contato": "João Silva"
 }
 ```
