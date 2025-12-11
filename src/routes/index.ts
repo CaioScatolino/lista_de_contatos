@@ -50,4 +50,29 @@ router.get("/contatos", async (req, res) => {
   return res.status(200).json({ contatos: list });
 });
 
+router.delete("/contato/:name", async (req, res) => {
+  const { name } = req.params;
+
+  // TODO: Delete contact from database
+  let list: string[] = [];
+
+  try {
+    const data = await readFile(dataSource, "utf-8");
+    list = JSON.parse(data);
+  } catch (err) {
+    console.log(err);
+  }
+
+  list = list.filter((contact) => contact !== name);
+
+  try {
+    await writeFile(dataSource, JSON.stringify(list));
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "Failed to delete contact" });
+  }
+
+  return res.status(200).json({ contato: name });
+});
+
 export default router;
